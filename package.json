@@ -27,13 +27,17 @@
   },
   "homepage": "https://github.com/realizehit/websocket-server",
   "dependencies": {
-    "debug": "^2.2.0",
+    "debug": "~2.2.0",
     "engine.io": "^1.5.1",
     "findhit-class": "^0.1.1",
     "findhit-util": "^0.2.7",
-    "msgpack": "^0.2.6",
+    "msgpack": "~0.2.6",
     "redis": "^0.12.1",
-    "requirehit-subscription": "latest"
+    "requirehit-subscription": "latest",
+    "chai": "~3.0.0",
+    "bluebird": "~2.9.30",
+    "realizehit-subscription": "~0.1.0",
+    "engine.io-client": "~1.5.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",

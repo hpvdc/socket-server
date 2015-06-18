@@ -70,7 +70,7 @@ describe( "socket server", function () {
                 expect( message ).to.deep.equal({
                     action: 'subscribe',
                     pattern: 'client:testing',
-                    status: 'ok',
+                    status: true,
                 });
             });
         });
@@ -112,6 +112,56 @@ describe( "socket server", function () {
     });
 
     describe( "unsubscribing process", function () {
+
+        it( "should unsubscribe", function(){
+            var self = this;
+            return Promise.try( function() {
+                self.send({
+                    action: 'subscribe',
+                    pattern: 'client:testing'
+                });
+                return self.waitForMessage();
+            })
+            .then( function( message ) {
+                expect( message ).to.deep.equal({
+                    action: 'subscribe',
+                    pattern: 'client:testing',
+                    status: true
+                });
+            })
+            .then( function(){
+                self.send({
+                    action: 'unsubscribe',
+                    pattern: 'client:testing'
+                });
+                return self.waitForMessage();
+            })
+            .then( function( message ){
+                expect( message ).to.deep.equal({
+                    action: 'unsubscribe',
+                    pattern: 'client:testing',
+                    status: true
+                });
+            });
+        });
+
+        it( "should'nt subscribe pattern that doesnt exist", function(){
+            var self = this;
+            return Promise.try( function(){
+                self.send({
+                    action: 'subscribe',
+                    pattern: 'client:testing'
+                });
+                return self.waitForMessage();
+            })
+            .then( function( message ){
+                expect( message ).to.deep.equal({
+                    action: 'subscribe',
+                    pattern: 'client:testing1',
+                    status: false
+                });
+            });
+        });
 
     });
 });
