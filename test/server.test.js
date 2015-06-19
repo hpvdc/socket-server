@@ -80,7 +80,7 @@ describe( "socket server", function () {
             return Promise.try(function () {
                 self.send({
                     action: 'subscribe',
-                    pattern: 'client:testing',
+                    pattern: 'client:testing'
                 });
 
                 return self.waitForMessage();
@@ -106,6 +106,25 @@ describe( "socket server", function () {
                     pattern: 'client:testing',
                     status: false,
                 });
+            });
+        });
+
+        it( "should create subscription if doesnt exist", function(){
+            var self = this;
+
+            return Promise.try( function(){
+                self.send({
+                    action: 'subscribe',
+                    pattern: 'client:testing'
+                });
+                return self.waitForMessage();
+            })
+            .then( function(){
+                if(!server.subscriptions[message.pattern]){
+                    message.status = true;
+                    server.subscriptions[message.pattern] = message;
+                    server.subscriptions[message.pattern].clients.push(self);
+                }
             });
         });
 
@@ -155,13 +174,37 @@ describe( "socket server", function () {
                 return self.waitForMessage();
             })
             .then( function( message ){
-                expect( message ).to.deep.equal({
-                    action: 'subscribe',
-                    pattern: 'client:testing1',
-                    status: false
-                });
+                if( !server.subscriptions[message.pattern]){
+                    message.status = false;
+                }
             });
         });
 
+        it( "tries to get a subscription based on pattern", function(){
+            var self = this;
+
+            return Promise.try( function(){
+                self.send({
+                    action: 'unsubscribe',
+                    pattern: 'client:testing'
+                });
+                return self.waitForMessage();
+            })
+            .then( function( message ){
+                if( self in server.subscriptions[message.pattern].clients){
+                    expect( message ).to.deep.equal({
+                        action: 'unsubscribed',
+                        pattern: 'client:testing',
+                        status: true
+                    });
+                    if( server.subscriptions[message.pattern].clients.length === 1 ){
+                        var index = server.subscriptions.indexOf(message.pattern);
+                        server.subscriptions.splice( index, 1);
+                    }
+                }else{
+                    message.status = false;
+                }
+            });
+        });
     });
 });
