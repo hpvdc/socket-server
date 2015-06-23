@@ -53,7 +53,6 @@ describe( "socket server", function () {
         this.server.close();
     });
 
-
     describe( "subscribing process", function () {
 
         it( "should subscribe flawless", function () {
@@ -72,7 +71,8 @@ describe( "socket server", function () {
                     pattern: 'client:testing',
                     status: true,
                 });
-            });
+            }).done();
+
         });
 
         it( "should return an error if we subscribe twice the same pattern", function () {
@@ -106,7 +106,8 @@ describe( "socket server", function () {
                     pattern: 'client:testing',
                     status: false,
                 });
-            });
+            })
+            .done();
         });
 
         it( "should create subscription if doesnt exist", function(){
@@ -125,7 +126,8 @@ describe( "socket server", function () {
                     server.subscriptions[message.pattern] = message;
                     server.subscriptions[message.pattern].clients.push(self);
                 }
-            });
+            })
+            .done();
         });
 
     });
@@ -161,7 +163,8 @@ describe( "socket server", function () {
                     pattern: 'client:testing',
                     status: true
                 });
-            });
+            })
+            .done();
         });
 
         it( "should'nt subscribe pattern that doesnt exist", function(){
@@ -177,7 +180,8 @@ describe( "socket server", function () {
                 if( !server.subscriptions[message.pattern]){
                     message.status = false;
                 }
-            });
+            })
+            .done();
         });
 
         it( "tries to get a subscription based on pattern", function(){
@@ -204,7 +208,8 @@ describe( "socket server", function () {
                 }else{
                     message.status = false;
                 }
-            });
+            })
+            .done();
         });
     });
 });
